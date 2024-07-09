@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get update
-          sudo apt-get -y install libxss-dev libx11-dev libgl1-mesa-dev libxcursor-dev libasound2-dev libjack-dev
+          sudo apt-get -y install libxss-dev libx11-dev libgl1-mesa-dev libxcursor-dev libasound2-dev libjack-dev libxcb-icccm4-dev libx11-xcb-dev libxcb-dri2-0-dev
 
       - name: Build
         run: cargo xtask bundle beatrec --release
