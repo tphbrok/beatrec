@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get update
-          sudo apt-get -y install libxss-dev libx11-dev
+          sudo apt-get -y install libxss-dev libx11-dev mesa-utils
 
       - run: PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 pkg-config --libs --cflags gl gl >= 1
 
