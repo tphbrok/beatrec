@@ -2,8 +2,6 @@ name: Upload artifacts
 
 on:
   push:
-    branches:
-      - main
     tags: ["v*"]
 
 env:
