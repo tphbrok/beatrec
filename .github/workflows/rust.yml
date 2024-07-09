@@ -16,13 +16,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 pkg-config --libs --cflags gl gl >= 1
-
       - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt-get update
           sudo apt-get -y install libxss-dev libx11-dev
+
+      - run: PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 pkg-config --libs --cflags gl gl >= 1
 
       - name: Build
         run: cargo xtask bundle beatrec --release
