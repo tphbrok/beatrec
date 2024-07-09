@@ -3,8 +3,6 @@ name: Rust
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
@@ -20,7 +18,16 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get update
-          sudo apt-get -y install libxss-dev libx11-dev libgl1-mesa-dev libxcursor-dev libasound2-dev libjack-dev libxcb-icccm4-dev libx11-xcb-dev libxcb-dri2-0-dev
+          sudo apt-get -y install \
+          libasound2-dev \
+          libgl1-mesa-dev \
+          libjack-dev \
+          libx11-dev \
+          libx11-xcb-dev \
+          libxcb-dri2-0-dev \
+          libxcb-icccm4-dev \
+          libxcursor-dev \
+          libxss-dev
 
       - name: Build
         run: cargo xtask bundle beatrec --release
