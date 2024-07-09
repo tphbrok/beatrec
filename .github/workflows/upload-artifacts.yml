@@ -32,10 +32,6 @@ jobs:
       - name: Build
         run: cargo xtask bundle beatrec --release
 
-  upload-artifacts:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.BEATREC_PAT }}
