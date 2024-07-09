@@ -6,13 +6,38 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  PROJECT_NAME: Beatrec
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      matrix:
+        include:
+          # - name: linux-amd64
+          #   runner: ubuntu-latest
+          #   target: x86_64-unknown-linux-gnu
+          # - name: win-amd64
+          #   runner: windows-latest
+          #   target: x86_64-pc-windows-msvc
+          # - name: macos-amd64
+          #   runner: macos-latest
+          #   target: x86_64-apple-darwin
+          - name: macos-arm64
+            runner: macos-latest
+            target: aarch64-apple-darwin
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: "${{ matrix.target }}"
+
+      - name: Setup Cache
+        uses: Swatinem/rust-cache@v2
 
       - name: Install system dependencies
         run: |
@@ -30,9 +55,17 @@ jobs:
           libxss-dev
 
       - name: Build
-        run: cargo xtask bundle beatrec --release
+        run: cargo xtask bundle beatrec --release --target ${{ matrix.target }}
+
+      - name: Zip macOS ARM releases
+        run: |
+          zip ./target/bundled/beatrec-clap-${{ github.ref_name }}.zip ./target/bundled/beatrec.clap &&
+          zip ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip ./target/bundled/beatrec.vst
 
       - name: Upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.BEATREC_PAT }}
-        run: gh release upload ${{ github.ref_name }} ./target/bundled/beatrec.clap ./target/bundled/beatrec.vst3
+        run: |
+          gh release upload ${{ github.ref_name }} \
+          ./target/bundled/beatrec-clap-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ (CLAP, macOS ARM) \
+          ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ (VST3, macOS ARM)
