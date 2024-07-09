@@ -42,7 +42,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Install system dependencies (Linux)
-        if: ${{ matrix.name == 'linux-amd64' }}
+        if: ${{ matrix.name == 'linux-x86_64' }}
         run: |
           sudo apt update
           sudo apt-get update
