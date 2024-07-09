@@ -18,3 +18,4 @@ rand = "0.8.5"
 rfd = "0.14.1"
 crossbeam-channel = "0.5.13"
 hound = "3.5.1"
+
