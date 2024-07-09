@@ -17,13 +17,13 @@ jobs:
     strategy:
       matrix:
         include:
-          # - name: linux-amd64
-          #   runner: ubuntu-latest
-          #   target: x86_64-unknown-linux-gnu
-          # - name: win-amd64
+          - name: linux-x86_64
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          # - name: win-x86_64
           #   runner: windows-latest
           #   target: x86_64-pc-windows-msvc
-          # - name: macos-amd64
+          # - name: macos-x86_64
           #   runner: macos-latest
           #   target: x86_64-apple-darwin
           - name: macos-arm64
@@ -62,13 +62,13 @@ jobs:
 
       - name: Zip macOS ARM releases
         run: |
-          zip ./target/bundled/beatrec-clap-${{ github.ref_name }}.zip ./target/bundled/beatrec.clap &&
-          zip ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip ./target/bundled/beatrec.vst3
+          zip ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-clap.zip ./target/bundled/beatrec.clap &&
+          zip ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-vst3.zip ./target/bundled/beatrec.vst3
 
       - name: Upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.BEATREC_PAT }}
         run: |
           gh release upload ${{ github.ref_name }} \
-          ./target/bundled/beatrec-clap-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ \(CLAP,\ macOS\ ARM\) \
-          ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ \(VST3,\ macOS\ ARM\)
+          ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-clap.zip#Beatrec\ ${{ github.ref_name }}\ \(CLAP,\ ${{ matrix.name }}) \
+          ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-vst3.zip#Beatrec\ ${{ github.ref_name }}\ \(VST3,\ ${{ matrix.name }})
