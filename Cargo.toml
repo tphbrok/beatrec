@@ -1,0 +1,20 @@
+[package]
+name = "beatrec"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[workspace]
+members = ["xtask"]
+
+[dependencies]
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", features = ["assert_process_allocs", "standalone"] }
+nih_plug_vizia = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+atomic_float = "1.0.0"
+triple_buffer = "8.0.0"
+rand = "0.8.5"
+rfd = "0.14.1"
+crossbeam-channel = "0.5.13"
+hound = "3.5.1"
