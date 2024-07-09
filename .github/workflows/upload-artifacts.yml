@@ -1,4 +1,4 @@
-name: Release
+name: Upload artifacts
 
 on:
   push:
@@ -32,18 +32,11 @@ jobs:
       - name: Build
         run: cargo xtask bundle beatrec --release
 
-  release-please:
+  upload-artifacts:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
-        id: release
-        with:
-          token: ${{ secrets.BEATREC_PAT }}
-          release-type: rust
-
-      - name: Upload Release Artifact
-        if: ${{ steps.release.outputs.release_created }}
+      - name: Upload artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.BEATREC_PAT }}
-        run: gh release upload ${{ steps.release.outputs.tag_name }} ./target/bundled/beatrec.clap ./target/bundled/beatrec.vst3
+        run: gh release upload ${{ github.ref_name }} ./target/bundled/beatrec.clap ./target/bundled/beatrec.vst3
