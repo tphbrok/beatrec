@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/tphbrok/beatrec/compare/v1.1.1...v1.1.2) (2024-07-09)
+
+
+### Bug Fixes
+
+* Set up cross compilation ([#7](https://github.com/tphbrok/beatrec/issues/7)) ([cc58b10](https://github.com/tphbrok/beatrec/commit/cc58b101d5578961f867ca90f610592096b03ba3))
+
 ## [1.1.1](https://github.com/tphbrok/beatrec/compare/v1.1.0...v1.1.1) (2024-07-09)
 
 
