@@ -1,4 +1,4 @@
-name: Rust
+name: Release
 
 on:
   push:
@@ -37,6 +37,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           token: ${{ secrets.BEATREC_PAT }}
-          release-type: simple
+          release-type: rust
+
+      - name: Upload Release Artifact
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.BEATREC_PAT }}
+        run: gh release upload ${{ steps.release.outputs.tag_name }} ./target/bundled/beatrec.clap ./target/bundled/beatrec.vst3
