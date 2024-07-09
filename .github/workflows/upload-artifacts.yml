@@ -70,5 +70,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BEATREC_PAT }}
         run: |
           gh release upload ${{ github.ref_name }} \
-          ./target/bundled/beatrec-clap-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ (CLAP, macOS ARM) \
-          ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ (VST3, macOS ARM)
+          ./target/bundled/beatrec-clap-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ \(CLAP, macOS ARM\) \
+          ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip#Beatrec\ ${{ github.ref_name }}\ \(VST3, macOS ARM\)
