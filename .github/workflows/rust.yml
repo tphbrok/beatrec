@@ -13,11 +13,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      PKG_CONFIG_PATH: /usr/lib/pkgconfig
-
     steps:
       - uses: actions/checkout@v4
+
+      - run: PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1 pkg-config --libs --cflags gl gl >= 1
 
       - name: Install system dependencies
         run: |
