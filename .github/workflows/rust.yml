@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get update
-          sudo apt-get -y install libxss-dev libx11-dev mesa-utils
+          sudo apt-get -y install libxss-dev libx11-dev mesa-utils libgl1-mesa-dev
 
       - run: dpkg -L mesa-utils
 
