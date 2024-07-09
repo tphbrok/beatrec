@@ -63,7 +63,7 @@ jobs:
       - name: Zip macOS ARM releases
         run: |
           zip ./target/bundled/beatrec-clap-${{ github.ref_name }}.zip ./target/bundled/beatrec.clap &&
-          zip ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip ./target/bundled/beatrec.vst
+          zip ./target/bundled/beatrec-vst3-${{ github.ref_name }}.zip ./target/bundled/beatrec.vst3
 
       - name: Upload artifacts
         env:
