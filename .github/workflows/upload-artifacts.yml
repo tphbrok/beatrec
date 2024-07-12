@@ -58,10 +58,17 @@ jobs:
       - name: Build
         run: cargo xtask bundle beatrec --release --target ${{ matrix.target }}
 
-      - name: Zip macOS ARM releases
+      - name: Zip CLAP release (non-Windows)
+        if: ${{ matrix.name != 'win-x86_64' }}
         run: |
-          zip ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-clap.zip ./target/bundled/beatrec.clap &&
-          zip ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-vst3.zip ./target/bundled/beatrec.vst3
+          cd ./target/bundled/clap && \
+          zip -r ./beatrec-${{ github.ref_name }}-${{ matrix.name }}-clap.zip ./beatrec.clap
+
+      - name: Zip VST3 release (non-Windows)
+        if: ${{ matrix.name != 'win-x86_64' }}
+        run: |
+          cd ./target/bundled/vst3 && \
+          zip -r ./beatrec-${{ github.ref_name }}-${{ matrix.name }}-vst3.zip ./beatrec.vst3
 
       - name: Upload artifacts
         env:
