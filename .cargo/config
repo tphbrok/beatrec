@@ -1,5 +1,2 @@
 [alias]
 xtask = "run --package xtask --release --"
-
-[build]
-rustflags = ["-Z", "threads=8"]
