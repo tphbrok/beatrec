@@ -94,10 +94,10 @@ impl Plugin for Beatrec {
     fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
         editor::create(
             editor::Data {
-                params: self.params.clone(),
                 buffer_output: self.waveform_buffer_output.clone(),
                 recording_progress: self.recording_progress.clone(),
                 command_sender: self.command_sender.clone(),
+                is_info_visible: false,
             },
             self.params.editor_state.clone(),
         )

@@ -19,8 +19,8 @@ impl Button {
         .build(cx, move |cx| {
             (content)(cx).hoverable(false).class("inner");
         })
-        .border_radius(Units::Pixels(2.0))
-        .border_width(Units::Pixels(1.0))
+        .border_radius(Units::Pixels(0.0))
+        .border_width(Units::Pixels(0.0))
         .color(Color::rgb(223, 251, 247))
         .cursor(CursorIcon::Hand)
         .default_action_verb(DefaultActionVerb::Click)

@@ -3,10 +3,9 @@ use nih_plug::nih_error;
 use nih_plug::prelude::Editor;
 use nih_plug_vizia::vizia::prelude::*;
 use nih_plug_vizia::{assets, create_vizia_editor, ViziaState, ViziaTheming};
+
 use std::sync::{Arc, Mutex};
 use waveform::WaveformBufferOutput;
-
-use crate::BeatrecParams;
 
 pub mod button;
 pub mod waveform;
@@ -18,20 +17,24 @@ pub enum PluginMessage {
 
 #[derive(Lens, Clone)]
 pub(crate) struct Data {
-    pub(crate) params: Arc<BeatrecParams>,
     pub(crate) buffer_output: Arc<Mutex<WaveformBufferOutput>>,
     pub(crate) recording_progress: Arc<Mutex<f32>>,
     pub(crate) command_sender: crossbeam_channel::Sender<PluginMessage>,
+    pub(crate) is_info_visible: bool,
 }
 
 pub enum EditorEvent {
     ClickSave,
+    ClickLogo,
+    ClickInfo,
 }
 
 impl Model for Data {
     fn event(&mut self, _cx: &mut EventContext, event: &mut Event) {
         event.map(|app_event, _| match app_event {
             EditorEvent::ClickSave => self.command_sender.send(PluginMessage::SaveBuffer).unwrap(),
+            EditorEvent::ClickLogo => self.is_info_visible = true,
+            EditorEvent::ClickInfo => self.is_info_visible = false,
         })
     }
 }
@@ -70,7 +73,8 @@ pub(crate) fn create(editor_data: Data, editor_state: Arc<ViziaState>) -> Option
                             .font_size(32.0)
                             .font_family(vec![FamilyOwned::Name(String::from("Bebas Neue"))])
                             .top(Units::Pixels(-8.0))
-                            .bottom(Units::Pixels(-12.0));
+                            .bottom(Units::Pixels(-12.0))
+                            .on_mouse_up(|cx, _| cx.emit(EditorEvent::ClickLogo));
 
                         Label::new(cx, "™")
                             .color(Color::rgb(223, 251, 247))
@@ -102,5 +106,28 @@ pub(crate) fn create(editor_data: Data, editor_state: Arc<ViziaState>) -> Option
             .space(Units::Pixels(SPACING));
         })
         .background_color(Color::rgb(14, 16, 20));
+
+        VStack::new(cx, |cx| {
+            VStack::new(cx, |cx| {
+                Label::new(cx, &format!("Version {}", env!("CARGO_PKG_VERSION")))
+                    .color(Color::white())
+                    .top(Units::Pixels(-2.0));
+
+                Label::new(cx, "Created by Thomas Brok (tphbrok.github.io)")
+                    .color(Color::white())
+                    .font_size(10.0);
+            })
+            .left(Units::Pixels(SPACING))
+            .top(Units::Pixels(SPACING))
+            .row_between(Units::Pixels(SPACING));
+        })
+        .background_color(Color::rgb(28, 32, 40))
+        .height(Units::Pixels(HEIGHT - 5.0 * SPACING))
+        .left(Units::Pixels(10.0 * SPACING))
+        .on_mouse_up(|cx, _| cx.emit(EditorEvent::ClickInfo))
+        .position_type(PositionType::SelfDirected)
+        .top(Units::Pixels(2.5 * SPACING))
+        .visibility(Data::is_info_visible)
+        .width(Units::Pixels(WIDTH - 20.0 * SPACING));
     })
 }
