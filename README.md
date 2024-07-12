@@ -4,7 +4,7 @@ Beatrec is an open source minimalistic rolling sampler, recording either a singl
 
 ![Screenshot](screenshot.png)
 
-Find more information at [tphbrok.github.io/projects/beatrec](tphbrok.github.io/projects/beatrec)
+Find more information at [https://tphbrok.github.io/projects/beatrec](https://tphbrok.github.io/projects/beatrec)
 
 ## Issues
 
