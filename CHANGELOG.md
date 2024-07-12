@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0](https://github.com/tphbrok/beatrec/compare/v0.0.1...v0.1.0) (2024-07-12)
+
+
+### Features
+
+* Add information popup ([7adbbc8](https://github.com/tphbrok/beatrec/commit/7adbbc8432fd6c2593690816c708daac6cc41c82))
+
 ## [0.0.1](https://github.com/tphbrok/beatrec/compare/v0.0.1...v0.0.1) (2024-07-12)
 
 
