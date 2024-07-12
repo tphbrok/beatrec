@@ -64,70 +64,77 @@ pub(crate) fn create(editor_data: Data, editor_state: Arc<ViziaState>) -> Option
 
         editor_data.clone().build(cx);
 
-        VStack::new(cx, |cx| {
-            VStack::new(cx, |cx| {
-                HStack::new(cx, |cx| {
-                    HStack::new(cx, |cx| {
-                        Label::new(cx, "Beatrec")
-                            .color(Color::rgb(223, 251, 247))
-                            .font_size(32.0)
-                            .font_family(vec![FamilyOwned::Name(String::from("Bebas Neue"))])
-                            .top(Units::Pixels(-8.0))
-                            .bottom(Units::Pixels(-12.0))
-                            .on_mouse_up(|cx, _| cx.emit(EditorEvent::ClickLogo));
-
-                        Label::new(cx, "™")
-                            .color(Color::rgb(223, 251, 247))
-                            .font_size(20.0)
-                            .font_family(vec![FamilyOwned::Name(String::from("Bebas Neue"))])
-                            .top(Units::Pixels(-8.0))
-                            .bottom(Units::Pixels(-12.0))
-                            .width(Units::Stretch(1.0));
-
-                        CustomButton::new(
-                            cx,
-                            |cx| {
-                                cx.emit(EditorEvent::ClickSave);
-                            },
-                            |cx| Label::new(cx, "Export"),
-                        );
-                    })
-                    .width(Units::Stretch(1.0))
-                    .height(Units::Auto);
-                })
-                .height(Units::Auto);
-
-                HStack::new(cx, |cx| {
-                    waveform::Waveform::new(cx, Data::buffer_output, Data::recording_progress);
-                })
-                .height(Units::Pixels(HEIGHT - 3.0 * SPACING - BUTTON_HEIGHT));
-            })
-            .row_between(Units::Pixels(SPACING))
-            .space(Units::Pixels(SPACING));
-        })
-        .background_color(Color::rgb(14, 16, 20));
-
-        VStack::new(cx, |cx| {
-            VStack::new(cx, |cx| {
-                Label::new(cx, &format!("Version {}", env!("CARGO_PKG_VERSION")))
-                    .color(Color::white())
-                    .top(Units::Pixels(-2.0));
-
-                Label::new(cx, "Created by Thomas Brok (tphbrok.github.io)")
-                    .color(Color::white())
-                    .font_size(10.0);
-            })
-            .left(Units::Pixels(SPACING))
-            .top(Units::Pixels(SPACING))
-            .row_between(Units::Pixels(SPACING));
-        })
-        .background_color(Color::rgb(28, 32, 40))
-        .height(Units::Pixels(HEIGHT - 5.0 * SPACING))
-        .left(Units::Pixels(10.0 * SPACING))
-        .on_mouse_up(|cx, _| cx.emit(EditorEvent::ClickInfo))
-        .position_type(PositionType::SelfDirected)
-        .top(Units::Pixels(2.5 * SPACING))
-        .visibility(Data::is_info_visible)
-        .width(Units::Pixels(WIDTH - 20.0 * SPACING));
+        render_ui(cx);
+        render_info(cx);
     })
+}
+
+fn render_ui(cx: &mut Context) {
+    VStack::new(cx, |cx| {
+        VStack::new(cx, |cx| {
+            HStack::new(cx, |cx| {
+                HStack::new(cx, |cx| {
+                    Label::new(cx, "Beatrec")
+                        .color(Color::rgb(223, 251, 247))
+                        .font_size(32.0)
+                        .font_family(vec![FamilyOwned::Name(String::from("Bebas Neue"))])
+                        .top(Units::Pixels(-8.0))
+                        .bottom(Units::Pixels(-12.0))
+                        .on_mouse_up(|cx, _| cx.emit(EditorEvent::ClickLogo));
+
+                    Label::new(cx, "™")
+                        .color(Color::rgb(223, 251, 247))
+                        .font_size(20.0)
+                        .font_family(vec![FamilyOwned::Name(String::from("Bebas Neue"))])
+                        .top(Units::Pixels(-8.0))
+                        .bottom(Units::Pixels(-12.0))
+                        .width(Units::Stretch(1.0));
+
+                    CustomButton::new(
+                        cx,
+                        |cx| {
+                            cx.emit(EditorEvent::ClickSave);
+                        },
+                        |cx| Label::new(cx, "Export"),
+                    );
+                })
+                .width(Units::Stretch(1.0))
+                .height(Units::Auto);
+            })
+            .height(Units::Auto);
+
+            HStack::new(cx, |cx| {
+                waveform::Waveform::new(cx, Data::buffer_output, Data::recording_progress);
+            })
+            .height(Units::Pixels(HEIGHT - 3.0 * SPACING - BUTTON_HEIGHT));
+        })
+        .row_between(Units::Pixels(SPACING))
+        .space(Units::Pixels(SPACING));
+    })
+    .background_color(Color::rgb(14, 16, 20));
+}
+
+fn render_info(cx: &mut Context) {
+    VStack::new(cx, |cx| {
+        VStack::new(cx, |cx| {
+            Label::new(cx, &format!("Version {}", env!("CARGO_PKG_VERSION")))
+                .color(Color::white())
+                .top(Units::Pixels(-2.0));
+
+            Label::new(cx, "Created by Thomas Brok (tphbrok.github.io)")
+                .color(Color::white())
+                .font_size(10.0);
+        })
+        .left(Units::Pixels(SPACING))
+        .top(Units::Pixels(SPACING))
+        .row_between(Units::Pixels(SPACING));
+    })
+    .background_color(Color::rgb(28, 32, 40))
+    .height(Units::Pixels(HEIGHT - 5.0 * SPACING))
+    .left(Units::Pixels(10.0 * SPACING))
+    .on_mouse_up(|cx, _| cx.emit(EditorEvent::ClickInfo))
+    .position_type(PositionType::SelfDirected)
+    .top(Units::Pixels(2.5 * SPACING))
+    .visibility(Data::is_info_visible)
+    .width(Units::Pixels(WIDTH - 20.0 * SPACING));
 }
