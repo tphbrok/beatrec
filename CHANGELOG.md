@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/tphbrok/beatrec/compare/v0.1.0...v0.1.1) (2024-07-13)
+
+
+### Bug Fixes
+
+* update color scheme to match tphbrok.github.io theme ([a0ddc8d](https://github.com/tphbrok/beatrec/commit/a0ddc8dfe76c2bfcb98cfbbfc8139edde0b5cfc9))
+
 ## [0.1.0](https://github.com/tphbrok/beatrec/compare/v0.0.1...v0.1.0) (2024-07-12)
 
 
