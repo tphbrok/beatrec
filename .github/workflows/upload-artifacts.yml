@@ -77,6 +77,7 @@ jobs:
           ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-vst3.zip
 
       - name: Trigger workflow for tphbrok.github.io
+        if: always()
         run: |
           run: |
             # Set the required variables
