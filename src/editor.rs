@@ -111,7 +111,7 @@ fn render_ui(cx: &mut Context) {
         .row_between(Units::Pixels(SPACING))
         .space(Units::Pixels(SPACING));
     })
-    .background_color(Color::rgb(14, 16, 20));
+    .background_color(Color::rgb(5, 13, 17));
 }
 
 fn render_info(cx: &mut Context) {
@@ -129,7 +129,7 @@ fn render_info(cx: &mut Context) {
         .top(Units::Pixels(SPACING))
         .row_between(Units::Pixels(SPACING));
     })
-    .background_color(Color::rgb(28, 32, 40))
+    .background_color(Color::rgb(13, 31, 41))
     .height(Units::Pixels(HEIGHT - 5.0 * SPACING))
     .left(Units::Pixels(10.0 * SPACING))
     .on_mouse_up(|cx, _| cx.emit(EditorEvent::ClickInfo))

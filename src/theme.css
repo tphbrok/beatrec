@@ -1,9 +1,7 @@
 button {
-  background-color: rgb(40, 46, 57);
-  border: 1px solid rgba(79, 91, 117, 255);
+  background-color: rgb(26, 62, 82);
 }
 
 button:hover {
-  background-color: rgb(58, 67, 89);
-  border: 1px solid rgba(79, 91, 117, 100);
+  background-color: rgb(39, 93, 123);
 }
