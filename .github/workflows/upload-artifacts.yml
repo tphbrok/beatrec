@@ -76,8 +76,12 @@ jobs:
           ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-clap.zip \
           ./target/bundled/beatrec-${{ github.ref_name }}-${{ matrix.name }}-vst3.zip
 
+  trigger_workflow:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
       - name: Trigger workflow for tphbrok.github.io
-        if: always()
         run: |
           # Set the required variables
           repo_owner="tphbrok" 
