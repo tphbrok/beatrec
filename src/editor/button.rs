@@ -37,7 +37,7 @@ impl View for Button {
     }
 
     fn event(&mut self, cx: &mut EventContext, event: &mut Event) {
-        event.map(|window_event, _meta| match window_event {
+        event.map(|window_event, meta| match window_event {
             WindowEvent::ActionRequest(action) => match action.action {
                 Action::Default => {
                     if let Some(callback) = &self.action {
@@ -47,6 +47,14 @@ impl View for Button {
 
                 _ => {}
             },
+
+            WindowEvent::Press { .. } => {
+                if meta.target == cx.current() {
+                    if let Some(callback) = &self.action {
+                        (callback)(cx);
+                    }
+                }
+            }
 
             WindowEvent::MouseUp(button) if *button == MouseButton::Left => {
                 cx.release();
