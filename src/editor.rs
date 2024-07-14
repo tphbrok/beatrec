@@ -13,7 +13,7 @@ pub mod waveform;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PluginMessage {
     SaveBuffer,
-    // PlayBuffer,
+    PlayBuffer,
 }
 
 #[derive(Lens, Clone)]
@@ -28,7 +28,7 @@ pub enum EditorEvent {
     ClickSave,
     ClickLogo,
     ClickInfo,
-    // ClickPlay,
+    ClickPlay,
 }
 
 impl Model for Data {
@@ -37,7 +37,7 @@ impl Model for Data {
             EditorEvent::ClickSave => self.command_sender.send(PluginMessage::SaveBuffer).unwrap(),
             EditorEvent::ClickLogo => self.is_info_visible = true,
             EditorEvent::ClickInfo => self.is_info_visible = false,
-            // EditorEvent::ClickPlay => self.command_sender.send(PluginMessage::PlayBuffer).unwrap(),
+            EditorEvent::ClickPlay => self.command_sender.send(PluginMessage::PlayBuffer).unwrap(),
         })
     }
 }
@@ -93,14 +93,14 @@ fn render_ui(cx: &mut Context) {
                         .bottom(Units::Pixels(-12.0))
                         .width(Units::Stretch(1.0));
 
-                    // CustomButton::new(
-                    //     cx,
-                    //     |cx| {
-                    //         cx.emit(EditorEvent::ClickPlay);
-                    //     },
-                    //     |cx| Label::new(cx, "Play"),
-                    // )
-                    // .right(Units::Pixels(SPACING / 2.0));
+                    CustomButton::new(
+                        cx,
+                        |cx| {
+                            cx.emit(EditorEvent::ClickPlay);
+                        },
+                        |cx| Label::new(cx, "Play"),
+                    )
+                    .right(Units::Pixels(SPACING / 2.0));
 
                     CustomButton::new(
                         cx,

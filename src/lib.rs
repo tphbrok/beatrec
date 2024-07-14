@@ -159,10 +159,12 @@ impl Plugin for Beatrec {
                             _ => {}
                         }
                     });
-                } // PluginMessage::PlayBuffer => {
-                  //     nih_log!("{}", self.export_buffer.len());
-                  //     // self.output_buffer.append(&mut self.export_buffer);
-                  // }
+                }
+
+                PluginMessage::PlayBuffer => {
+                    self.output_buffer.clear();
+                    self.output_buffer.append(&mut self.export_buffer.clone());
+                }
             }
         }
 
@@ -202,28 +204,22 @@ impl Plugin for Beatrec {
 
         self.waveform_buffer_input.write(averages);
 
-        // let buffer_len = buffer.samples();
+        if self.output_buffer.len() > 0 {
+            let output_slice: Vec<_> = self
+                .output_buffer
+                .drain(0..buffer.samples().min(self.output_buffer.len() - 1))
+                .collect();
 
-        // nih_log!("{}", self.export_buffer.len());
+            if output_slice.len() > 0 {
+                for (i, channel_samples) in buffer.iter_samples().enumerate() {
+                    let channel_output_slice = output_slice[i.min(output_slice.len() - 1)].clone();
 
-        // if self.output_buffer.len() > 0 {
-        //     nih_log!("play");
-        //     // let output_slice: Vec<_> = self
-        //     //     .output_buffer
-        //     //     .drain(0..buffer_len.min(self.output_buffer.len()))
-        //     //     .collect();
-
-        //     // for (i, channel_samples) in buffer.iter_samples().enumerate() {
-        //     //     let channel_output_slice = output_slice[i].clone();
-
-        //     //     for (j, sample) in channel_samples.into_iter().enumerate() {
-        //     //         let channel_output_sample = channel_output_slice[j];
-
-        //     //         *sample = rand::random();
-        //     //         // *sample = channel_output_sample;
-        //     //     }
-        //     // }
-        // }
+                    for (j, sample) in channel_samples.into_iter().enumerate() {
+                        *sample = channel_output_slice[j];
+                    }
+                }
+            }
+        }
 
         ProcessStatus::Normal
     }
