@@ -109,18 +109,20 @@ impl Plugin for Beatrec {
         _aux: &mut AuxiliaryBuffers,
         context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
-        let tempo = context.transport().tempo.unwrap() as f32;
-        let is_playing = context.transport().playing;
-        let sample_rate = context.transport().sample_rate;
-        let samples_per_beat;
-        let loop_range_samples = context.transport().loop_range_samples();
+        let transport = context.transport();
+        let tempo = transport.tempo.unwrap() as f32;
+        let is_playing = transport.playing;
+        let sample_rate = transport.sample_rate;
 
-        match loop_range_samples {
+        let range_samples;
+        match context.transport().loop_range_samples() {
+            // If a loop is active in the transport, set range_samples to the amount of samples in that loop
             Some((start, end)) => {
-                samples_per_beat = (end - start) as f32;
+                range_samples = (end - start) as f32;
             }
+            // Otherwise, take a single beat (dependent on the transport tempo)
             None => {
-                samples_per_beat = sample_rate / (tempo / 60.0);
+                range_samples = sample_rate / (tempo / 60.0);
             }
         }
 
@@ -165,9 +167,9 @@ impl Plugin for Beatrec {
                     .push(channel_samples.into_iter().map(|s| s.to_f32()).collect());
 
                 self.recording_progress
-                    .set(self.recording_buffer.len() as f32 / samples_per_beat);
+                    .set(self.recording_buffer.len() as f32 / range_samples);
 
-                if self.recording_buffer.len() as f32 >= samples_per_beat {
+                if self.recording_buffer.len() as f32 >= range_samples {
                     self.output_buffer.clear();
                     self.output_buffer.append(&mut self.recording_buffer);
                     self.recording_buffer.clear();
@@ -177,7 +179,7 @@ impl Plugin for Beatrec {
             }
         }
 
-        let average_frame_size = (samples_per_beat / 2400.0).round() as usize;
+        let average_frame_size = (range_samples / 2400.0).round() as usize;
 
         let chunks = self.output_buffer.chunks_exact(average_frame_size);
 
