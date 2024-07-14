@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/tphbrok/beatrec/compare/v0.1.1...v0.1.2) (2024-07-14)
+
+
+### Bug Fixes
+
+* Fix broken button ([1e47750](https://github.com/tphbrok/beatrec/commit/1e47750baf870e86057eeb949d20372a2cc34bbb))
+
 ## [0.1.1](https://github.com/tphbrok/beatrec/compare/v0.1.0...v0.1.1) (2024-07-13)
 
 
