@@ -15,6 +15,7 @@ type AudioBuffer = Vec<Vec<f32>>;
 pub struct Beatrec {
     params: Arc<BeatrecParams>,
     output_buffer: AudioBuffer,
+    export_buffer: AudioBuffer,
     waveform_buffer_input: WaveformBufferInput,
     waveform_buffer_output: Arc<Mutex<WaveformBufferOutput>>,
     recording_buffer: AudioBuffer,
@@ -37,11 +38,12 @@ impl Default for Beatrec {
         let (waveform_buffer_input, waveform_buffer_output) =
             TripleBuffer::new(&initial_waveform_buffer).split();
 
-        let (command_sender, command_receiver) = crossbeam_channel::bounded(1024);
+        let (command_sender, command_receiver) = crossbeam_channel::bounded(1);
 
         Self {
             params: Arc::new(BeatrecParams::default()),
             output_buffer: Vec::new(),
+            export_buffer: Vec::new(),
             waveform_buffer_input,
             waveform_buffer_output: Arc::new(Mutex::new(waveform_buffer_output)),
             recording_buffer: Vec::new(),
@@ -129,7 +131,7 @@ impl Plugin for Beatrec {
         while let Ok(command) = self.command_receiver.try_recv() {
             match command {
                 PluginMessage::SaveBuffer => {
-                    let current_buffer = self.output_buffer.clone();
+                    let current_buffer = self.export_buffer.clone();
 
                     std::thread::spawn(move || {
                         match rfd::FileDialog::new()
@@ -157,7 +159,10 @@ impl Plugin for Beatrec {
                             _ => {}
                         }
                     });
-                }
+                } // PluginMessage::PlayBuffer => {
+                  //     nih_log!("{}", self.export_buffer.len());
+                  //     // self.output_buffer.append(&mut self.export_buffer);
+                  // }
             }
         }
 
@@ -170,8 +175,8 @@ impl Plugin for Beatrec {
                     .set(self.recording_buffer.len() as f32 / range_samples);
 
                 if self.recording_buffer.len() as f32 >= range_samples {
-                    self.output_buffer.clear();
-                    self.output_buffer.append(&mut self.recording_buffer);
+                    self.export_buffer.clear();
+                    self.export_buffer.append(&mut self.recording_buffer);
                     self.recording_buffer.clear();
                 }
             } else {
@@ -181,7 +186,7 @@ impl Plugin for Beatrec {
 
         let average_frame_size = (range_samples / 2400.0).round() as usize;
 
-        let chunks = self.output_buffer.chunks_exact(average_frame_size);
+        let chunks = self.export_buffer.chunks_exact(average_frame_size);
 
         let averages = chunks
             .map(|chunk| {
@@ -196,6 +201,29 @@ impl Plugin for Beatrec {
             .collect();
 
         self.waveform_buffer_input.write(averages);
+
+        // let buffer_len = buffer.samples();
+
+        // nih_log!("{}", self.export_buffer.len());
+
+        // if self.output_buffer.len() > 0 {
+        //     nih_log!("play");
+        //     // let output_slice: Vec<_> = self
+        //     //     .output_buffer
+        //     //     .drain(0..buffer_len.min(self.output_buffer.len()))
+        //     //     .collect();
+
+        //     // for (i, channel_samples) in buffer.iter_samples().enumerate() {
+        //     //     let channel_output_slice = output_slice[i].clone();
+
+        //     //     for (j, sample) in channel_samples.into_iter().enumerate() {
+        //     //         let channel_output_sample = channel_output_slice[j];
+
+        //     //         *sample = rand::random();
+        //     //         // *sample = channel_output_sample;
+        //     //     }
+        //     // }
+        // }
 
         ProcessStatus::Normal
     }
