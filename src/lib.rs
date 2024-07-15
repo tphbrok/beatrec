@@ -129,6 +129,12 @@ impl Plugin for Beatrec {
         }
 
         while let Ok(command) = self.command_receiver.try_recv() {
+            // Because when the transport is playing, exporting or playing the recording
+            // is senseless
+            if is_playing {
+                break;
+            }
+
             match command {
                 PluginMessage::SaveBuffer => {
                     let current_buffer = self.export_buffer.clone();
