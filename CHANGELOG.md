@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/tphbrok/beatrec/compare/v0.1.2...v0.2.0) (2024-07-15)
+
+
+### Features
+
+* add playback button ([#17](https://github.com/tphbrok/beatrec/issues/17)) ([a1edc53](https://github.com/tphbrok/beatrec/commit/a1edc5304708c7a1584b93ea5c1ecd01f5ebf31f))
+
 ## [0.1.2](https://github.com/tphbrok/beatrec/compare/v0.1.1...v0.1.2) (2024-07-14)
 
 
