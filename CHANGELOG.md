@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/tphbrok/beatrec/compare/v0.2.0...v0.2.1) (2024-07-17)
+
+
+### Bug Fixes
+
+* Add precise handling of export buffer size ([70c6976](https://github.com/tphbrok/beatrec/commit/70c6976c52dfe38c49e9089c7658648fde979f8f))
+
 ## [0.2.0](https://github.com/tphbrok/beatrec/compare/v0.1.2...v0.2.0) (2024-07-15)
 
 
