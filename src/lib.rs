@@ -116,15 +116,16 @@ impl Plugin for Beatrec {
         let is_playing = transport.playing;
         let sample_rate = transport.sample_rate;
 
-        let range_samples;
+        let range_samples: usize;
+
         match context.transport().loop_range_samples() {
             // If a loop is active in the transport, set range_samples to the amount of samples in that loop
             Some((start, end)) => {
-                range_samples = (end - start) as f32;
+                range_samples = (end - start) as usize;
             }
             // Otherwise, take a single beat (dependent on the transport tempo)
             None => {
-                range_samples = sample_rate / (tempo / 60.0);
+                range_samples = (sample_rate / (tempo / 60.0)).round() as usize;
             }
         }
 
@@ -180,48 +181,60 @@ impl Plugin for Beatrec {
                     .push(channel_samples.into_iter().map(|s| s.to_f32()).collect());
 
                 self.recording_progress
-                    .set(self.recording_buffer.len() as f32 / range_samples);
+                    .set(self.recording_buffer.len() as f32 / range_samples as f32);
 
-                if self.recording_buffer.len() as f32 >= range_samples {
+                if self.recording_buffer.len() >= range_samples {
+                    let mut temp_buffer = self.recording_buffer.clone();
+                    temp_buffer.truncate(range_samples);
+
+                    let mut remainder = self.recording_buffer.clone();
+                    remainder.reverse();
+                    remainder.truncate(self.recording_buffer.len() - range_samples);
+                    remainder.reverse();
+
                     self.export_buffer.clear();
-                    self.export_buffer.append(&mut self.recording_buffer);
+                    self.export_buffer.append(&mut temp_buffer);
                     self.recording_buffer.clear();
+                    self.recording_buffer.append(&mut remainder);
                 }
             } else {
                 self.recording_buffer.clear();
             }
         }
 
-        let average_frame_size = (range_samples / 2400.0).round() as usize;
+        if is_playing {
+            let average_frame_size = (range_samples / 2400) as usize;
+            let chunks = self.export_buffer.chunks_exact(average_frame_size);
 
-        let chunks = self.export_buffer.chunks_exact(average_frame_size);
+            let averages = chunks
+                .map(|chunk| {
+                    let mut average = 0.0;
 
-        let averages = chunks
-            .map(|chunk| {
-                let mut average = 0.0;
+                    for channel_samples in chunk {
+                        average +=
+                            channel_samples.iter().sum::<f32>() / channel_samples.len() as f32;
+                    }
 
-                for channel_samples in chunk {
-                    average += channel_samples.iter().sum::<f32>() / channel_samples.len() as f32;
-                }
-
-                (average / average_frame_size as f32).clamp(-1.0, 1.0).neg()
-            })
-            .collect();
-
-        self.waveform_buffer_input.write(averages);
-
-        if self.output_buffer.len() > 0 {
-            let output_slice: Vec<_> = self
-                .output_buffer
-                .drain(0..buffer.samples().min(self.output_buffer.len() - 1))
+                    (average / average_frame_size as f32).clamp(-1.0, 1.0).neg()
+                })
                 .collect();
 
-            if output_slice.len() > 0 {
-                for (i, channel_samples) in buffer.iter_samples().enumerate() {
-                    let channel_output_slice = output_slice[i.min(output_slice.len() - 1)].clone();
+            self.waveform_buffer_input.write(averages);
 
-                    for (j, sample) in channel_samples.into_iter().enumerate() {
-                        *sample = channel_output_slice[j];
+            if self.output_buffer.len() > 0 {
+                let output_slice: Vec<_> = self
+                    .output_buffer
+                    .drain(0..buffer.samples().min(self.output_buffer.len() - 1))
+                    .collect();
+
+                if output_slice.len() > 0 {
+                    for (i, channel_samples) in buffer.iter_samples().enumerate() {
+                        let channel_output_slice =
+                            output_slice[i.min(output_slice.len() - 1)].clone();
+
+                        for (j, sample) in channel_samples.into_iter().enumerate() {
+                            *sample = channel_output_slice[j];
+                        }
                     }
                 }
             }
